@@ -2,8 +2,14 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => {
-  res.send('API caisse pharma OK');
+app.use(express.json());
+
+const { router: authRouter, checkAuth } = require('./auth');
+
+app.use('/', authRouter);
+
+app.get('/caisse', checkAuth, (req, res) => {
+  res.json({ message: `Caisse OK pour rôle : ${req.user.role}` });
 });
 
 app.listen(port, () => {
